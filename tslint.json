@@ -1,0 +1,12 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint-config-airbnb"
+  ],
+  "rules": {
+    "member-access": false,
+    "align": true,
+    "no-parameter-reassignment": true,
+    "prefer-const": true
+  }
+}

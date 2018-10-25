@@ -1,0 +1,20 @@
+{
+  "name": "clean-code",
+  "version": "1.0.0",
+  "description": "TS good practices",
+  "main": "index.js",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json bad-code/lint/*.ts ",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "test": "npm run build && node dist/test.js",
+    "test:lint": "npm run build && node dist/test.js"
+  },
+  "author": "German Potes <germandavid85@gmai.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "typescript": "^3.1.3"
+  }
+}
