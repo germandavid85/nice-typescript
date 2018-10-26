@@ -105,6 +105,6 @@ We can extend tslint rules from a pre existing and well tunned set of rules, in 
     ```
 1. run `npm run lint`, then **spot** and **fix** as needed
 
-## Clean code
+## SOLID
 
 coming...
