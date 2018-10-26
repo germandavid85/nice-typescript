@@ -1,12 +1,16 @@
 {
+  "rulesDirectory": "./dist/tslint-rules",
   "defaultSeverity": "error",
-  "extends": [
-    "tslint-config-airbnb"
-  ],
   "rules": {
     "member-access": false,
     "align": true,
     "no-parameter-reassignment": true,
-    "prefer-const": true
+    "prefer-const": true,
+    "unified-signatures": true,
+    "ban-types": [true, ["String", "Use string instead."], ["Boolean", "Use boolean instead."]],
+    "no-any": true,
+    "no-single-responsibility": true,
+    "open-closed": true,
+    "liskov-substitution": true
   }
 }
