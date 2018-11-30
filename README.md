@@ -367,6 +367,104 @@ class Walker {
 
 > Make fine grained interfaces that are client specific. [link](https://drive.google.com/file/d/0BwhCYaYDn8EgOTViYjJhYzMtMzYxMC00MzFjLWJjMzYtOGJiMDc5N2JkYmJi/view)
 
+It is quite common to find that an interface is in essence just a description of an entire class. The ISP states that we should write a series of smaller and more specific interfaces that are implemented by the class. Each interface provides an single behavior.
+
+Let's see this example
+
+```ts
+interface Printer {
+    copyDocument();
+    printDocument(document: Document);
+    stapleDocument(document: Document, tray: Number);
+}
+
+
+class SimplePrinter implements Printer {
+
+    public copyDocument() {
+        //...
+    }
+
+    public printDocument(document: Document) {
+        //...
+    }
+
+    public stapleDocument(document: Document, tray: Number) {
+        //...
+    }
+
+}
+```
+
+This code violates ISP, as `Printer` makes it impossible to implement a printer that can print and copy, but no staple. The following example shows an alternative approach  that groups methods into more specific interfaces. It describe a number of contracts that could be implemented individually by a simple printer or copier or by a super printer. 
+
+```ts
+
+interface Printer {
+    printDocument(document: Document);
+}
+
+
+interface Stapler {
+    stapleDocument(document: Document, tray: number);
+}
+
+
+interface Copier {
+    copyDocument();
+}
+
+class SimplePrinter implements Printer {
+    public printDocument(document: Document) {
+        //...
+    }
+}
+
+
+class SuperPrinter implements Printer, Stapler, Copier {
+    public copyDocument() {
+        //...
+    }
+
+    public printDocument(document: Document) {
+        //...
+    }
+
+    public stapleDocument(document: Document, tray: number) {
+        //...
+    }
+}
+```
+
+
 ### D: Dependency Inversion
 
 > Depend on abstractions, not on concretions. [link](https://drive.google.com/file/d/0BwhCYaYDn8EgMjdlMWIzNGUtZTQ0NC00ZjQ5LTkwYzQtZjRhMDRlNTQ3ZGMz/view)
+
+Let's suppose that you need to login into any page and you have setted up google oauth login for your client
+```ts
+class Login { 
+    login(googleLogin: any) { 
+        // some code which will be used for google login.
+    }
+}
+```
+Now your client has changed and you need to start implementing other social login (FB login, user and password etc). This code won't work. So as per the principle, your high level class should not depend on low level class. Let's see the refactor.
+
+```ts
+interface ISocialLogin {
+    login(options: any);
+ }
+
+class GoogleLogin implements ISocialLogin { 
+    login(googleLogin: any) { 
+        // some code which will be used for google login.
+    }
+}
+
+class FBLogin implements ISocialLogin { 
+    login(fbLogin: any) { 
+        // some code which will be used for fb login.
+    }
+}
+```
