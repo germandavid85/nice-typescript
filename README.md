@@ -392,7 +392,6 @@ class SimplePrinter implements Printer {
     public stapleDocument(document: Document, tray: Number) {
         //...
     }
-
 }
 ```
 
@@ -409,7 +408,6 @@ interface Stapler {
     stapleDocument(document: Document, tray: number);
 }
 
-
 interface Copier {
     copyDocument();
 }
@@ -419,7 +417,6 @@ class SimplePrinter implements Printer {
         //...
     }
 }
-
 
 class SuperPrinter implements Printer, Stapler, Copier {
     public copyDocument() {
@@ -436,6 +433,13 @@ class SuperPrinter implements Printer, Stapler, Copier {
 }
 ```
 
+* **CHALLENGE**
+
+  1. take a look at `solid/i/interface-segregation.ts`
+  1. modify `interface-segregation.ts` to follow open Interface Segregation principle as described above, it should have more specific interfaces named: `Clickable`, `Writable` and `Readable` and classes `SubmitButton` and `InputField` implementing the interfaces
+  1. figure out what functions should implement the interfaces and what interfaces should implement each class to fulfill Interface Segregation principle
+  1. run `npm run build` until no errors are showing up
+  1. create a pull request and make sure `travis ci` execution was successful
 
 ### D: Dependency Inversion
 
@@ -468,3 +472,13 @@ class FBLogin implements ISocialLogin {
     }
 }
 ```
+
+* **CHALLENGE**
+
+  1. take a look at `solid/d/dependency-inversion.ts`
+  1. modify `dependency-inversion.ts` to follow open Dependency Inversion
+  1. Figure out what `interfaces` are needed to avoid the code coupling
+  1. run `npm run build` until no errors are showing up
+  1. create a pull request and make sure `travis ci` execution was successful
+
+**NOTE:** To have a fully understanding of the concepts above, figure out how [strategy pattern](https://codeburst.io/implementing-strategy-pattern-on-typescript-b74c447da37b) can be applied to the previous problem to improve the code. Take a look at an implementation [here](https://github.com/torokmark/design_patterns_in_typescript/tree/master/strategy)
