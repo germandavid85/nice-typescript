@@ -367,6 +367,161 @@ class Walker {
 
 > Make fine grained interfaces that are client specific. [link](https://drive.google.com/file/d/0BwhCYaYDn8EgOTViYjJhYzMtMzYxMC00MzFjLWJjMzYtOGJiMDc5N2JkYmJi/view)
 
+This rule states that an interface should not have multiple responsibilities, instead we should define more fine grained interfaces to do specific things
+
+Let's see this case where an interface is defining several things
+
+```ts
+interface Printable {
+    copyDocument();
+    printDocument(document: Document);
+    stapleDocument(document: Document, tray: Number);
+}
+
+
+class SimplePrinter implements Printable {
+
+    public copyDocument() {
+    }
+
+    public printDocument(document: Document) {
+    }
+
+    public stapleDocument(document: Document, tray: Number) {
+    }
+
+}
+```
+
+we should aim to have more specific behaviors when defining interface, that we we don't force to the users to implement all of its functions
+
+```ts
+interface Printable {
+    printDocument(document: Document);
+}
+
+
+interface Stapleable {
+    stapleDocument(document: Document, tray: number);
+}
+
+
+interface Copyable {
+    copyDocument();
+}
+
+class SimplePrinter implements Printable {
+    public printDocument(document: Document) {
+        //...
+    }
+}
+
+
+class SuperPrinter implements Printable, Stapleable, Copyable {
+    public copyDocument() {
+        //...
+    }
+
+    public printDocument(document: Document) {
+        //...
+    }
+
+    public stapleDocument(document: Document, tray: number) {
+        //...
+    }
+}
+```
+
+* **CHALLENGE**
+
+  1. take a look at `solid/i/interface-segregation.ts`
+  1. modify `interface-segregation.ts` to follow open Interface Segregation principle as described above, it should have more specific interfaces named: `Clickable`, `Writable` and `Readable` and classes `SubmitButton` and `InputField` implementing the interfaces
+  1. figure out what functions should implement the interfaces and what interfaces should implement each class to fulfill Interface Segregation principle
+  1. run `npm run build` until no errors are showing up
+  1. create a pull request and make sure `travis ci` execution was successful
+
 ### D: Dependency Inversion
 
 > Depend on abstractions, not on concretions. [link](https://drive.google.com/file/d/0BwhCYaYDn8EgMjdlMWIzNGUtZTQ0NC00ZjQ5LTkwYzQtZjRhMDRlNTQ3ZGMz/view)
+
+Let's look at this example:
+
+```ts
+class CarWindow {
+    open() {
+        //...
+    }
+
+    close() {
+        //...
+    }
+}
+
+
+class WindowSwitch {
+    private isOn = false;
+
+    constructor(private window: CarWindow) {
+
+    }
+
+    onPress() {
+        if (this.isOn) {
+            this.window.close();
+            this.isOn = false;
+        } else {
+            this.window.open();
+            this.isOn = true;
+        }
+    }
+}
+```
+
+Here if we need to change `window` by a different one we would need do add a different parameter to the constructor and start adding `if / else` cases to be able to extend the `WindowSwitch` class, this is finally leading to high coupling between the classes. Dependency Inversion says to depend on abstractions so different implementations can be `injected` easily and the concretion is `inverted` as it has to be passed by the user of the class and not the class itself. Let's review the example above improved:
+
+```ts
+interface IWindow {
+    open();
+    close();
+}
+
+class CarWindow implements IWindow {
+    open() {
+        //...
+    }
+
+    close() {
+        //...
+    }
+}
+
+class WindowSwitch {
+    private isOn = false;
+
+    constructor(private window: IWindow) {
+
+    }
+
+    onPress() {
+        if (this.isOn) {
+            this.window.close();
+            this.isOn = false;
+        } else {
+            this.window.open();
+            this.isOn = true;
+        }
+    }
+}
+```
+
+This way, any implementation of `IWindow` can be passed to `WindowSwitch` and it won't need any further changes to keep working correctly.
+
+* **CHALLENGE**
+
+  1. take a look at `solid/d/dependency-inversion.ts`
+  1. modify `dependency-inversion.ts` to follow open Dependency Inversion
+  1. Figure out what `interfaces` are needed to avoid the code coupling
+  1. run `npm run build` until no errors are showing up
+  1. create a pull request and make sure `travis ci` execution was successful
+
+**NOTE:** To have a fully understanding of the concepts above, figure out how [strategy pattern](https://codeburst.io/implementing-strategy-pattern-on-typescript-b74c447da37b) can be applied to the previous problem to improve the code. Take a look at an implementation [here](https://github.com/torokmark/design_patterns_in_typescript/tree/master/strategy)
