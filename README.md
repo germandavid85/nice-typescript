@@ -367,57 +367,58 @@ class Walker {
 
 > Make fine grained interfaces that are client specific. [link](https://drive.google.com/file/d/0BwhCYaYDn8EgOTViYjJhYzMtMzYxMC00MzFjLWJjMzYtOGJiMDc5N2JkYmJi/view)
 
-This rule states that an interface should not have multiple responsibilities, instead we should define more fine grained interfaces to do specific things
+It is quite common to find that an interface is in essence just a description of an entire class. The ISP states that we should write a series of smaller and more specific interfaces that are implemented by the class. Each interface provides an single behavior.
 
-Let's see this case where an interface is defining several things
+Let's see this example
 
 ```ts
-interface Printable {
+interface Printer {
     copyDocument();
     printDocument(document: Document);
     stapleDocument(document: Document, tray: Number);
 }
 
 
-class SimplePrinter implements Printable {
+class SimplePrinter implements Printer {
 
     public copyDocument() {
+        //...
     }
 
     public printDocument(document: Document) {
+        //...
     }
 
     public stapleDocument(document: Document, tray: Number) {
+        //...
     }
-
 }
 ```
 
-we should aim to have more specific behaviors when defining interface, that we we don't force to the users to implement all of its functions
+This code violates ISP, as `Printer` makes it impossible to implement a printer that can print and copy, but no staple. The following example shows an alternative approach  that groups methods into more specific interfaces. It describe a number of contracts that could be implemented individually by a simple printer or copier or by a super printer. 
 
 ```ts
-interface Printable {
+
+interface Printer {
     printDocument(document: Document);
 }
 
 
-interface Stapleable {
+interface Stapler {
     stapleDocument(document: Document, tray: number);
 }
 
-
-interface Copyable {
+interface Copier {
     copyDocument();
 }
 
-class SimplePrinter implements Printable {
+class SimplePrinter implements Printer {
     public printDocument(document: Document) {
         //...
     }
 }
 
-
-class SuperPrinter implements Printable, Stapleable, Copyable {
+class SuperPrinter implements Printer, Stapler, Copier {
     public copyDocument() {
         //...
     }
@@ -444,77 +445,33 @@ class SuperPrinter implements Printable, Stapleable, Copyable {
 
 > Depend on abstractions, not on concretions. [link](https://drive.google.com/file/d/0BwhCYaYDn8EgMjdlMWIzNGUtZTQ0NC00ZjQ5LTkwYzQtZjRhMDRlNTQ3ZGMz/view)
 
-Let's look at this example:
-
+Let's suppose that you need to login into any page and you have setted up google oauth login for your client
 ```ts
-class CarWindow {
-    open() {
-        //...
-    }
-
-    close() {
-        //...
-    }
-}
-
-
-class WindowSwitch {
-    private isOn = false;
-
-    constructor(private window: CarWindow) {
-
-    }
-
-    onPress() {
-        if (this.isOn) {
-            this.window.close();
-            this.isOn = false;
-        } else {
-            this.window.open();
-            this.isOn = true;
-        }
+class Login { 
+    login(googleLogin: any) { 
+        // some code which will be used for google login.
     }
 }
 ```
-
-Here if we need to change `window` by a different one we would need do add a different parameter to the constructor and start adding `if / else` cases to be able to extend the `WindowSwitch` class, this is finally leading to high coupling between the classes. Dependency Inversion says to depend on abstractions so different implementations can be `injected` easily and the concretion is `inverted` as it has to be passed by the user of the class and not the class itself. Let's review the example above improved:
+Now your client has changed and you need to start implementing other social login (FB login, user and password etc). This code won't work. So as per the principle, your high level class should not depend on low level class. Let's see the refactor.
 
 ```ts
-interface IWindow {
-    open();
-    close();
-}
+interface ISocialLogin {
+    login(options: any);
+ }
 
-class CarWindow implements IWindow {
-    open() {
-        //...
-    }
-
-    close() {
-        //...
+class GoogleLogin implements ISocialLogin { 
+    login(googleLogin: any) { 
+        // some code which will be used for google login.
     }
 }
 
-class WindowSwitch {
-    private isOn = false;
-
-    constructor(private window: IWindow) {
-
-    }
-
-    onPress() {
-        if (this.isOn) {
-            this.window.close();
-            this.isOn = false;
-        } else {
-            this.window.open();
-            this.isOn = true;
-        }
+class FBLogin implements ISocialLogin { 
+    login(fbLogin: any) { 
+        // some code which will be used for fb login.
     }
 }
 ```
-
-This way, any implementation of `IWindow` can be passed to `WindowSwitch` and it won't need any further changes to keep working correctly.
 
 * **CHALLENGE**
 
