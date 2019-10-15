@@ -1,4 +1,5 @@
 {
+  "assignAutomerge": false,
   "extends": [
     "config:base"
   ]
