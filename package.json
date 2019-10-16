@@ -17,7 +17,7 @@
   "author": "German Potes <germandavid85@gmai.com>",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "10.14.21",
+    "@types/node": "10.14.22",
     "tslint": "5.20.0",
     "tslint-config-airbnb": "5.11.2",
     "typescript": "3.6.4"
