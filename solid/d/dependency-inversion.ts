@@ -29,6 +29,7 @@ class AccordionMenu {
 class HamburgerMenuInteractor {
   constructor(private hamburgerMenu: HamburgerMenu) {}
 
+  // clicks
   click(): void {
     if (this.hamburgerMenu.state === 'opened') {
       this.hamburgerMenu.close();
